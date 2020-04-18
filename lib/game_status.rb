@@ -16,15 +16,19 @@ WIN_COMBINATIONS = [
 ]
 
 def won?(board)
-  WIN_COMBINATIONS.detect do |winner| #[0, 1, 2]
-      board[winner[0]] == board[winner[1]] && board[winner[0]] == board[winner[2]] && position_taken?(board, winner[0])
+  WIN_COMBINATIONS.detect do |i|
+    i.all?{|subset| board[subset] == "X"} || i.all?{|subset| board[subset] == "O"}
   end
 end
 
 def full?(board)
-  board.all? do |board_position|
-    board_position == "X" || board_position == "O"
+  board.all? do |i|
+    i == "X" || i == "O"
   end
+end
+
+def draw?(board)
+
 end
 
 def draw?(board)
@@ -32,11 +36,17 @@ def draw?(board)
 end
 
 def over?(board)
-  draw?(board) || (won?(board) && full?(board)) || (won?(board) && !full?(board))
+  full?(board) || won?(board)
 end
 
 def winner(board)
   if won?(board)
-    board[won?(board)[0]]
+    if (board.select {|index| index == "X"}).count >= (board.select {|index| index == "O"}).count
+      "X"
+    elsif (board.select {|index| index == "O"}).count >= (board.select {|index| index == "X"}).count
+      "O"
+    else
+      nil
+    end
   end
 end
